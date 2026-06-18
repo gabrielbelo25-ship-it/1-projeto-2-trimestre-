@@ -3,314 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da Memória: Doenças Oculares</title>
+    <title>Flashcards de Doenças</title>
     <style>
-        :root {
-            --bg-sky: #87CEEB; /* Azul Céu */
-            --card-dark-blue: #0f172a; /* Azul Escuro */
-            --card-front-bg: #ffffff;
-            --text-light: #f8fafc;
-            --text-dark: #1e293b;
-            --success: #10b981;
+        /* Configurações Gerais */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-sky);
-            color: var(--text-dark);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
+            background-color: #f4f7f6;
+            padding: 40px 20px;
+            color: #333;
         }
 
         h1 {
-            color: var(--card-dark-blue);
-            margin: 10px 0 5px 0;
             text-align: center;
-            font-size: 2.3rem;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            margin-bottom: 40px;
+            color: #2c3e50;
         }
 
-        .score-board {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #1e3a8a;
-            margin-bottom: 20px;
-            display: flex;
-            gap: 20px;
-        }
-
-        /* Grid do Jogo: 8 cartas no total */
-        .memory-game {
+        /* Grade dos Flashcards (Lado a Lado) */
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 1000px;
-            perspective: 1000px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        @media (max-width: 768px) {
-            .memory-game {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        .memory-card {
-            height: 260px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease;
+        /* Estrutura do Flashcard */
+        .flashcard {
+            background-color: transparent;
+            height: 200px;
+            perspective: 1000px; /* Efeito 3D */
             cursor: pointer;
         }
 
-        /* Ativa a rotação ao virar */
-        .memory-card.flip {
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        /* Giro da carta ao passar o mouse */
+        .flashcard:hover .flashcard-inner {
             transform: rotateY(180deg);
         }
 
-        /* Quando o par está correto, ganha um efeito visual verde estável */
-        .memory-card.matched .front {
-            border: 4px solid var(--success);
-        }
-
-        .back, .front {
+        /* Frente e Verso das Cartas */
+        .card-front, .card-verso {
             position: absolute;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            backface-visibility: hidden; /* Esconde o lado oposto */
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            box-sizing: border-box;
-            padding: 15px;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
         }
 
-        /* Lado de Trás (Escondido): Azul Escuro com o Ícone do Olho */
-        .back {
-            background-color: var(--card-dark-blue);
-            color: var(--text-light);
-            text-align: center;
+        /* Estilo do Lado da Frente */
+        .card-front {
+            background-color: #ffffff;
+            color: #2c3e50;
         }
 
-        .back .eye-icon {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-        }
-
-        .back span {
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
-
-        /* Lado da Frente (Revelado): Branco com conteúdo */
-        .front {
-            background-color: var(--card-front-bg);
-            transform: rotateY(180deg);
-            text-align: center;
-        }
-
-        /* Estilo para cartas do tipo Nome/Imagem */
-        .front h2 {
+        .card-front h2 {
             font-size: 1.4rem;
-            margin: 0 0 10px 0;
-            color: var(--card-dark-blue);
         }
 
-        .image-container {
-            width: 100%;
-            height: 130px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        /* Estilo para cartas do tipo Descrição */
-        .front p {
-            font-size: 0.95rem;
-            line-height: 1.4;
-            margin: 0;
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-
-        .front .card-type {
-            font-size: 0.75rem;
-            color: #2563eb;
-            margin-bottom: 8px;
-            font-weight: bold;
+        .card-front span {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-top: 10px;
             text-transform: uppercase;
         }
 
-        #win-message {
-            display: none;
-            background-color: var(--success);
+        /* Estilo do Lado do Verso */
+        .card-verso {
+            background-color: #3498db;
             color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 1.3rem;
-            margin-top: 20px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            animation: pop 0.3s ease-out;
+            transform: rotateY(180deg);
         }
 
-        @keyframes pop {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .card-verso p {
+            font-size: 1rem;
+            line-height: 1.4;
         }
     </style>
 </head>
 <body>
 
-    <h1>Jogo da Memória: Saúde Ocular</h1>
-    
-    <div class="score-board">
-        <div>Jogadas: <span id="moves">0</span></div>
-        <div>Acertos: <span id="matches">0 / 4</span></div>
+    <h1>Flashcards Médicos: Doenças</h1>
+
+    <div class="grid-container">
+
+        <!-- Card 1 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front">
+                    <h2>Diabetes Mellitus</h2>
+                    <span>Passe o mouse para revelar</span>
+                </div>
+                <div class="card-verso">
+                    <p>Distúrbio metabólico caracterizado por níveis elevados de glicose no sangue devido à falta ou resistência à insulina.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front">
+                    <h2>Hipertensão</h2>
+                    <span>Passe o mouse para revelar</span>
+                </div>
+                <div class="card-verso">
+                    <p>Condição crônica onde a pressão exercida pelo sangue nas artérias é constantemente elevada (pressão alta).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front">
+                    <h2>Asma</h2>
+                    <span>Passe o mouse para revelar</span>
+                </div>
+                <div class="card-verso">
+                    <p>Doença inflamatória crônica das vias aéreas que causa estreitamento dos brônquios, gerando falta de ar e chiado.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front">
+                    <h2>Alzheimer</h2>
+                    <span>Passe o mouse para revelar</span>
+                </div>
+                <div class="card-verso">
+                    <p>Doença neurodegenerativa progressiva que afeta a memória, o pensamento e o comportamento de forma gradual.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front">
+                    <h2>Gripe (Influenza)</h2>
+                    <span>Passe o mouse para revelar</span>
+                </div>
+                <div class="card-verso">
+                    <p>Infecção viral aguda do sistema respiratório, altamente contagiosa, caracterizada por febre, dores e fadiga.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="card-front">
+                    <h2>Anemia</h2>
+                    <span>Passe o mouse para revelar</span>
+                </div>
+                <div class="card-verso">
+                    <p>Diminuição da quantidade de glóbulos vermelhos ou de hemoglobina no sangue, reduzindo o transporte de oxigênio.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="memory-game" id="game-board">
-        <!-- As 8 cartas serão geradas dinamicamente via JavaScript aqui para permitir o embaralhamento -->
-    </div>
-
-    <div id="win-message">🎉 Parabéns! Você encontrou todas as doenças oculares!</div>
-
-    <script>
-        // Banco de dados dos pares (ID igual vincula o Nome à sua Descrição)
-        const cardsData = [
-            {
-                id: "glaucoma",
-                type: "name",
-                name: "Glaucoma",
-                img: "https://clevelandclinic.org"
-            },
-            {
-                id: "glaucoma",
-                type: "desc",
-                desc: "Aumento da pressão interna do olho que danifica o nervo óptico, sendo uma das maiores causas de cegueira irreversível."
-            },
-            {
-                id: "catarata",
-                type: "name",
-                name: "Catarata",
-                img: "https://healthdirect.gov.au"
-            },
-            {
-                id: "catarata",
-                type: "desc",
-                desc: "Opacificação do cristalino (lente natural do olho), deixando a visão nublada. Tratada por meio de cirurgia corretiva."
-            },
-            {
-                id: "miopia",
-                type: "name",
-                name: "Miopia",
-                img: "https://theeyepractice.com.au"
-            },
-            {
-                id: "miopia",
-                type: "desc",
-                desc: "Erro refrativo que gera grande dificuldade para focar objetos distantes porque a imagem se forma antes da retina."
-            },
-            {
-                id: "conjuntivite",
-                type: "name",
-                name: "Conjuntivite",
-                img: "https://korbereyecare.com"
-            },
-            {
-                id: "conjuntivite",
-                type: "desc",
-                desc: "Inflamação da conjuntiva que deixa os olhos vermelhos e lacrimejantes. Pode ser viral, bacteriana ou alérgica."
-            }
-        ];
-
-        let hasFlippedCard = false;
-        let lockBoard = false;
-        let firstCard, secondCard;
-        let movesCount = 0;
-        let matchesCount = 0;
-
-        const gameBoard = document.getElementById('game-board');
-        const movesEl = document.getElementById('moves');
-        const matchesEl = document.getElementById('matches');
-        const winMessage = document.getElementById('win-message');
-
-        // Algoritmo para embaralhar as cartas automaticamente
-        function shuffle(array) {
-            return array.sort(() => Math.random() - 0.5);
-        }
-
-        // Monta a estrutura HTML do jogo de forma embaralhada
-        function createBoard() {
-            const shuffledCards = shuffle([...cardsData]);
-            
-            shuffledCards.forEach(data => {
-                const card = document.createElement('div');
-                card.classList.add('memory-card');
-                card.dataset.id = data.id;
-
-                // Define o conteúdo interno baseado no tipo de carta (Nome ou Descrição)
-                let frontContent = '';
-                if (data.type === 'name') {
-                    frontContent = `
-                        <div class="card-type">Doença</div>
-                        <h2>${data.name}</h2>
-                        <div class="image-container">
-                            <img src="${data.img}" alt="${data.name}">
-                        </div>
-                    `;
-                } else {
-                    frontContent = `
-                        <div class="card-type">Sintomas / Definição</div>
-                        <p>${data.desc}</p>
-                    `;
-                }
-
-                card.innerHTML = `
-                    <div class="front">${frontContent}</div>
-                    <div class="back">
-                        <div class="eye-icon">👁️</div>
-                        <span>Oftalmo</span>
-                    </div>
-                `;
-
-                card.addEventListener('click', flipCard);
-                gameBoard.appendChild(card);
-            });
-        }
-
-        // Lógica de clique e virada de carta
-        function flipCard() {
-            if (lockBoard) return;
-            if (this === firstCard) return; // Evita clicar duas vezes na mesma carta
-
-            this.classList.add('flip');
-
-            if (!hasFlippedCard) {
-                // Primeiro clique
-                hasFlippedCard = true;
-                firstCard = this;
-                return;
-            }
-
-            // Segundo clique
-            secondCard = this;
-            updateMoves();
-
+</body>
+</html>
