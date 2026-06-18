@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcards de Doenças</title>
     <style>
-        /* Configurações Gerais */
+        /* Configurações Globais */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,22 +14,32 @@
         }
 
         body {
-            background-color: #f4f7f6;
+            background-color: #f0f4f8;
             padding: 40px 20px;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
             color: #2c3e50;
         }
 
-        /* Grade dos Flashcards (Lado a Lado) */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #1a252f;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        /* Grade dos Flashcards (Alinhamento Lado a Lado) */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -37,8 +47,8 @@
         /* Estrutura do Flashcard */
         .flashcard {
             background-color: transparent;
-            height: 200px;
-            perspective: 1000px; /* Efeito 3D */
+            height: 220px;
+            perspective: 1000px; /* Ativa o efeito 3D */
             cursor: pointer;
         }
 
@@ -47,142 +57,164 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.6s;
+            transition: transform 0.6s ease;
             transform-style: preserve-3d;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
         }
 
-        /* Giro da carta ao passar o mouse */
+        /* Efeito de Giro ao passar o mouse */
         .flashcard:hover .flashcard-inner {
             transform: rotateY(180deg);
         }
 
-        /* Frente e Verso das Cartas */
+        /* Configuração Comum da Frente e do Verso */
         .card-front, .card-verso {
             position: absolute;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* Esconde o lado oposto */
+            backface-visibility: hidden; /* Esconde o lado oposto durante o giro */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
         }
 
-        /* Estilo do Lado da Frente */
+        /* Estilo da Frente da Carta */
         .card-front {
             background-color: #ffffff;
             color: #2c3e50;
         }
 
         .card-front h2 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
         }
 
-        .card-front span {
+        .card-front .hint {
             font-size: 0.8rem;
-            color: #95a5a6;
-            margin-top: 10px;
+            color: #a0aec0;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px dashed #cbd5e0;
+            padding: 4px 10px;
+            border-radius: 20px;
         }
 
-        /* Estilo do Lado do Verso */
+        /* Estilo do Verso da Carta */
         .card-verso {
-            background-color: #3498db;
-            color: white;
+            background-color: #3182ce;
+            color: #ffffff;
             transform: rotateY(180deg);
+        }
+
+        .card-verso h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
         }
 
         .card-verso p {
             font-size: 1rem;
-            line-height: 1.4;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <h1>Flashcards Médicos: Doenças</h1>
+    <header>
+        <h1>Flashcards Médicos</h1>
+        <p class="subtitle">Passe o mouse sobre os cards para estudar as patologias</p>
+    </header>
 
     <div class="grid-container">
 
-        <!-- Card 1 -->
+        <!-- Card 1: Diabetes -->
         <div class="flashcard">
             <div class="flashcard-inner">
                 <div class="card-front">
                     <h2>Diabetes Mellitus</h2>
-                    <span>Passe o mouse para revelar</span>
+                    <div class="hint">Revelar Resposta</div>
                 </div>
                 <div class="card-verso">
-                    <p>Distúrbio metabólico caracterizado por níveis elevados de glicose no sangue devido à falta ou resistência à insulina.</p>
+                    <h3>Definição</h3>
+                    <p>Distúrbio metabólico crônico caracterizado pela alta concentração de glicose no sangue, decorrente de problemas na produção ou ação da insulina.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Card 2 -->
+        <!-- Card 2: Hipertensão -->
         <div class="flashcard">
             <div class="flashcard-inner">
                 <div class="card-front">
-                    <h2>Hipertensão</h2>
-                    <span>Passe o mouse para revelar</span>
+                    <h2>Hipertensão Arterial</h2>
+                    <div class="hint">Revelar Resposta</div>
                 </div>
                 <div class="card-verso">
-                    <p>Condição crônica onde a pressão exercida pelo sangue nas artérias é constantemente elevada (pressão alta).</p>
+                    <h3>Definição</h3>
+                    <p>Condição crônica (pressão alta) em que a força exercida pelo sangue contra as paredes das artérias é forte o suficiente para causar problemas de saúde.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Card 3 -->
+        <!-- Card 3: Asma -->
         <div class="flashcard">
             <div class="flashcard-inner">
                 <div class="card-front">
-                    <h2>Asma</h2>
-                    <span>Passe o mouse para revelar</span>
+                    <h2>Asma Bronquial</h2>
+                    <div class="hint">Revelar Resposta</div>
                 </div>
                 <div class="card-verso">
-                    <p>Doença inflamatória crônica das vias aéreas que causa estreitamento dos brônquios, gerando falta de ar e chiado.</p>
+                    <h3>Definição</h3>
+                    <p>Doença inflamatória crônica das vias aéreas que causa o estreitamento dos brônquios, resultando em episódios recorrentes de falta de ar e chiado no peito.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Card 4 -->
+        <!-- Card 4: Alzheimer -->
         <div class="flashcard">
             <div class="flashcard-inner">
                 <div class="card-front">
-                    <h2>Alzheimer</h2>
-                    <span>Passe o mouse para revelar</span>
+                    <h2>Doença de Alzheimer</h2>
+                    <div class="hint">Revelar Resposta</div>
                 </div>
                 <div class="card-verso">
-                    <p>Doença neurodegenerativa progressiva que afeta a memória, o pensamento e o comportamento de forma gradual.</p>
+                    <h3>Definição</h3>
+                    <p>Transtorno neurodegenerativo progressivo que destrói lentamente a memória, as habilidades de pensamento e, eventualmente, a capacidade de realizar tarefas simples.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Card 5 -->
+        <!-- Card 5: Tuberculose -->
         <div class="flashcard">
             <div class="flashcard-inner">
                 <div class="card-front">
-                    <h2>Gripe (Influenza)</h2>
-                    <span>Passe o mouse para revelar</span>
+                    <h2>Tuberculose</h2>
+                    <div class="hint">Revelar Resposta</div>
                 </div>
                 <div class="card-verso">
-                    <p>Infecção viral aguda do sistema respiratório, altamente contagiosa, caracterizada por febre, dores e fadiga.</p>
+                    <h3>Definição</h3>
+                    <p>Doença infecciosa e transmissível causada pela bactéria Mycobacterium tuberculosis, que afeta principalmente os pulmões, mas pode atingir outros órgãos.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Card 6 -->
+        <!-- Card 6: Anemia -->
         <div class="flashcard">
             <div class="flashcard-inner">
                 <div class="card-front">
-                    <h2>Anemia</h2>
-                    <span>Passe o mouse para revelar</span>
+                    <h2>Anemia Ferropriva</h2>
+                    <div class="hint">Revelar Resposta</div>
                 </div>
                 <div class="card-verso">
-                    <p>Diminuição da quantidade de glóbulos vermelhos ou de hemoglobina no sangue, reduzindo o transporte de oxigênio.</p>
+                    <h3>Definição</h3>
+                    <p>Redução na quantidade de glóbulos vermelhos ou de hemoglobina no sangue causada pela deficiência de ferro, limitando o transporte de oxigênio pelo corpo.</p>
                 </div>
             </div>
         </div>
@@ -191,3 +223,4 @@
 
 </body>
 </html>
+
