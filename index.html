@@ -3,49 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcards: Doenças do Olho Humano</title>
+    <title>Flashcards Interativos: Doenças Oculares</title>
     <style>
         :root {
-            --primary: #1e3a8a;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #0f172a;
+            --bg-sky: #87CEEB; /* Azul Céu */
+            --card-dark-blue: #0f172a; /* Azul Escuro */
+            --text-light: #f8fafc;
+            --text-dark: #1e293b;
+            --card-back-bg: #ffffff;
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-sky);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            box-sizing: border-box;
         }
 
         h1 {
-            color: var(--primary);
-            margin-bottom: 30px;
+            color: var(--card-dark-blue);
+            margin-bottom: 10px;
             text-align: center;
+            font-size: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
         }
 
-        .container {
+        p.subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        /* Grid que organiza os 4 cartões juntos */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
             width: 100%;
-            max-width: 500px;
+            max-width: 1200px;
+        }
+
+        /* Configuração do efeito 3D individual */
+        .card-box {
             perspective: 1000px;
+            height: 380px;
         }
 
         .flashcard {
             width: 100%;
-            height: 300px;
+            height: 100%;
             position: relative;
             transform-style: preserve-3d;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
 
+        /* Classe aplicada via JS para virar o cartão */
         .flashcard.flip {
             transform: rotateY(180deg);
         }
@@ -55,161 +76,162 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 30px;
             box-sizing: border-box;
-            text-align: center;
+            padding: 24px;
         }
 
+        /* Lado da Frente: Azul Escuro */
         .front {
-            background-color: var(--primary);
-            color: white;
+            background-color: var(--card-dark-blue);
+            color: var(--text-light);
+            justify-content: space-between;
+            align-items: center;
         }
 
         .front h2 {
-            font-size: 2.2rem;
-            margin: 0;
+            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+            text-align: center;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+            width: 100%;
         }
 
-        .front span {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-top: 20px;
+        /* Container das Imagens nos Flashcards */
+        .image-container {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .front .hint {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* Lado de Trás: Branco com borda escura */
         .back {
-            background-color: var(--card-bg);
+            background-color: var(--card-back-bg);
+            color: var(--text-dark);
             transform: rotateY(180deg);
-            border: 2px solid var(--primary);
+            border: 3px solid var(--card-dark-blue);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .back h3 {
+            margin: 0 0 15px 0;
+            color: var(--card-dark-blue);
+            font-size: 1.4rem;
         }
 
         .back p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             line-height: 1.6;
             margin: 0;
-        }
-
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            font-weight: bold;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        button:disabled {
-            background-color: #cbd5e0;
-            cursor: not-allowed;
-        }
-
-        .progress {
-            font-size: 1rem;
-            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
     <h1>Doenças do Olho Humano</h1>
+    <p class="subtitle">Clique em qualquer cartão individualmente para revelar ou ocultar a descrição</p>
 
-    <div class="container">
-        <div class="flashcard" id="card">
-            <div class="front">
-                <h2 id="disease-name">Carregando...</h2>
-                <span>💡 Clique para ver a descrição</span>
-            </div>
-            <div class="back">
-                <p id="disease-desc">Carregando...</p>
+    <div class="grid-container">
+
+        <!-- CARD 1: GLAUCOMA -->
+        <div class="card-box">
+            <div class="flashcard" onclick="toggleFlip(this)">
+                <div class="front">
+                    <h2>Glaucoma</h2>
+                    <div class="image-container">
+                        <img src="https://clevelandclinic.org" alt="Diagrama de Glaucoma">
+                    </div>
+                    <div class="hint">Clique para ler a descrição 💡</div>
+                </div>
+                <div class="back">
+                    <h3>Sobre o Glaucoma</h3>
+                    <p>É provocado pelo aumento da pressão interna do olho, danificando de forma progressiva o nervo óptico. Trata-se de uma das maiores causas de cegueira irreversível no mundo se não diagnosticado cedo.</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="controls">
-        <button id="prev-btn" onclick="prevCard()">Anterior</button>
-        <span class="progress" id="progress">0 / 4</span>
-        <button id="next-btn" onclick="nextCard()">Próximo</button>
+        <!-- CARD 2: CATARATA -->
+        <div class="card-box">
+            <div class="flashcard" onclick="toggleFlip(this)">
+                <div class="front">
+                    <h2>Catarata</h2>
+                    <div class="image-container">
+                        <img src="https://healthdirect.gov.au" alt="Olho normal vs Olho com Catarata">
+                    </div>
+                    <div class="hint">Clique para ler a descrição 💡</div>
+                </div>
+                <div class="back">
+                    <h3>Sobre a Catarata</h3>
+                    <p>Ocorre devido à opacificação do cristalino (a lente interna natural do olho), deixando a visão embaçada e opaca, parecendo que há uma névoa. A cura definitiva é obtida por meio de cirurgia corretiva.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 3: MIOPIA -->
+        <div class="card-box">
+            <div class="flashcard" onclick="toggleFlip(this)">
+                <div class="front">
+                    <h2>Miopia</h2>
+                    <div class="image-container">
+                        <img src="https://theeyepractice.com.au" alt="Foco de luz na Miopia">
+                    </div>
+                    <div class="hint">Clique para ler a descrição 💡</div>
+                </div>
+                <div class="back">
+                    <h3>Sobre a Miopia</h3>
+                    <p>Erro refrativo que gera grande dificuldade para focar e enxergar objetos distantes com nitidez. Isso ocorre porque o formato do globo ocular faz com que as imagens se formem antes da retina.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD 4: CONJUNTIVITE -->
+        <div class="card-box">
+            <div class="flashcard" onclick="toggleFlip(this)">
+                <div class="front">
+                    <h2>Conjuntivite</h2>
+                    <div class="image-container">
+                        <img src="https://korbereyecare.com" alt="Tipos de Conjuntivite">
+                    </div>
+                    <div class="hint">Clique para ler a descrição 💡</div>
+                </div>
+                <div class="back">
+                    <h3>Sobre a Conjuntivite</h3>
+                    <p>Inflamação da conjuntiva (membrana fina e transparente que cobre a esclera). Deixa os olhos muito vermelhos, lacrimejantes e coçando. Pode ter origem viral, bacteriana ou alérgica.</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        const flashcards = [
-            {
-                name: "Glaucoma",
-                desc: "Aumento da pressão interna do olho que danifica o nervo óptico. É uma das principais causas de cegueira irreversível se não for tratada precocemente."
-            },
-            {
-                name: "Catarata",
-                desc: "Opacificação do cristalino (a lente natural do olho), tornando a visão opaca e nublada. O tratamento definitivo é a cirurgia de substituição da lente."
-            },
-            {
-                name: "Miopia",
-                desc: "Distúrbio visual que causa dificuldade para enxergar objetos distantes com clareza. Ocorre porque a imagem visual se foca à frente da retina."
-            },
-            {
-                name: "Conjuntivite",
-                desc: "Inflamação da membrana transparente que reveste a pálpebra e a esclera (parte branca). Pode ser transmitida por vírus, bactérias ou alergias."
-            }
-        ];
-
-        let currentIndex = 0;
-        const card = document.getElementById('card');
-        const nameEl = document.getElementById('disease-name');
-        const descEl = document.getElementById('disease-desc');
-        const progressEl = document.getElementById('progress');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-
-        card.addEventListener('click', () => {
-            card.classList.toggle('flip');
-        });
-
-        function updateCard() {
-            card.classList.remove('flip'); 
-            
-            setTimeout(() => {
-                nameEl.textContent = flashcards[currentIndex].name;
-                descEl.textContent = flashcards[currentIndex].desc;
-                progressEl.textContent = `${currentIndex + 1} / ${flashcards.length}`;
-                
-                prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex === flashcards.length - 1;
-            }, 150);
+        // Função responsável por virar apenas o cartão que recebeu o clique
+        function toggleFlip(cardElement) {
+            cardElement.classList.toggle('flip');
         }
-
-        function nextCard() {
-            if (currentIndex < flashcards.length - 1) {
-                currentIndex++;
-                updateCard();
-            }
-        }
-
-        function prevCard() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateCard();
-            }
-        }
-
-        updateCard();
     </script>
 </body>
 </html>
