@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Doenças do Olho Humano</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .flashcard.flip {
+            transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .front {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .front h2 {
+            font-size: 2.2rem;
+            margin: 0;
+        }
+
+        .front span {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        .back {
+            background-color: var(--card-bg);
+            transform: rotateY(180deg);
+            border: 2px solid var(--primary);
+        }
+
+        .back p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background-color: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .progress {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Doenças do Olho Humano</h1>
+
+    <div class="container">
+        <div class="flashcard" id="card">
+            <div class="front">
+                <h2 id="disease-name">Carregando...</h2>
+                <span>💡 Clique para ver a descrição</span>
+            </div>
+            <div class="back">
+                <p id="disease-desc">Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prev-btn" onclick="prevCard()">Anterior</button>
+        <span class="progress" id="progress">0 / 4</span>
+        <button id="next-btn" onclick="nextCard()">Próximo</button>
+    </div>
+
+    <script>
+        const flashcards = [
+            {
+                name: "Glaucoma",
+                desc: "Aumento da pressão interna do olho que danifica o nervo óptico. É uma das principais causas de cegueira irreversível se não for tratada precocemente."
+            },
+            {
+                name: "Catarata",
+                desc: "Opacificação do cristalino (a lente natural do olho), tornando a visão opaca e nublada. O tratamento definitivo é a cirurgia de substituição da lente."
+            },
+            {
+                name: "Miopia",
+                desc: "Distúrbio visual que causa dificuldade para enxergar objetos distantes com clareza. Ocorre porque a imagem visual se foca à frente da retina."
+            },
+            {
+                name: "Conjuntivite",
+                desc: "Inflamação da membrana transparente que reveste a pálpebra e a esclera (parte branca). Pode ser transmitida por vírus, bactérias ou alergias."
+            }
+        ];
+
+        let currentIndex = 0;
+        const card = document.getElementById('card');
+        const nameEl = document.getElementById('disease-name');
+        const descEl = document.getElementById('disease-desc');
+        const progressEl = document.getElementById('progress');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('flip');
+        });
+
+        function updateCard() {
+            card.classList.remove('flip'); 
+            
+            setTimeout(() => {
+                nameEl.textContent = flashcards[currentIndex].name;
+                descEl.textContent = flashcards[currentIndex].desc;
+                progressEl.textContent = `${currentIndex + 1} / ${flashcards.length}`;
+                
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === flashcards.length - 1;
+            }, 150);
+        }
+
+        function nextCard() {
+            if (currentIndex < flashcards.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        updateCard();
+    </script>
+</body>
+</html>
